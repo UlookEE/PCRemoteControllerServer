@@ -6,6 +6,7 @@
 #include <QNetworkInterface>
 #include <QTcpSocket>
 #include <QDateTime>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,6 +23,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // For random
     qsrand(QDateTime::currentMSecsSinceEpoch() / 1000);
+
+    //load code
+    loadCode();
+    updateCodeLabel();
 }
 
 MainWindow::~MainWindow()
@@ -48,8 +53,36 @@ void MainWindow::onCodeGenerationButtonClicked()
 {
     QString randomStr = GetRandomString(10);
     this->validationStr = randomStr;
+    saveCode();
+    updateCodeLabel();
+}
+
+void MainWindow::saveCode()
+{
+    QString filename = "Data.txt";
+    QFile file( filename );
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QTextStream stream( &file );
+        stream << this->validationStr;
+    }
+}
+
+void MainWindow::loadCode()
+{
+    QString filename = "Data.txt";
+    QFile file( filename );
+    if ( file.open(QIODevice::ReadWrite) )
+    {
+        QTextStream stream( &file );
+        stream >> this->validationStr;
+    }
+}
+
+void MainWindow::updateCodeLabel()
+{
     QString ip = IPToCode(this->localIPAddress);
-    QString code = ip + randomStr;
+    QString code = ip + this->validationStr;
     qDebug()<<code;
     this->ui->codeLabel->setText(code);
 }

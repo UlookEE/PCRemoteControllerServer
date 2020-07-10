@@ -15,6 +15,9 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     void getLocalIPAddress();
+    void saveCode();
+    void loadCode();
+    void updateCodeLabel();
     ~MainWindow();
 
 private:
