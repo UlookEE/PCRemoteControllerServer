@@ -85,4 +85,28 @@ void MainWindow::updateCodeLabel()
     QString code = ip + this->validationStr;
     qDebug()<<code;
     this->ui->codeLabel->setText(code);
+    updateQRImage();
+}
+
+void MainWindow::updateQRImage()
+{
+    int levelIndex = 1;
+    int versionIndex = 0;
+    bool bExtent = true;
+    int maskIndex = -1;
+    QString encodeString = ui->codeLabel->text();
+
+    qrEncode.EncodeData( levelIndex, versionIndex, bExtent, maskIndex, encodeString.toUtf8().data() );
+
+    int qrImageSize = qrEncode.m_nSymbleSize;
+
+    int encodeImageSize = qrImageSize + ( QR_MARGIN * 2 );
+    QImage encodeImage( encodeImageSize, encodeImageSize, QImage::Format_Mono );
+    encodeImage.fill( 1 );
+    for ( int i = 0; i < qrImageSize; i++ )
+        for ( int j = 0; j < qrImageSize; j++ )
+            if ( qrEncode.m_byModuleData[i][j] )
+                encodeImage.setPixel( i + QR_MARGIN, j + QR_MARGIN, 0 );
+    QImage scaledImage = encodeImage.scaled(220,220);
+    ui->qrCodeLabel->setPixmap( QPixmap::fromImage( scaledImage) );
 }

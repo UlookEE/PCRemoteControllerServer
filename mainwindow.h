@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "QRCodeGenerator.h"
+
 #include <QMainWindow>
 #include <QHostAddress>
 
@@ -18,12 +20,14 @@ public:
     void saveCode();
     void loadCode();
     void updateCodeLabel();
+    void updateQRImage();
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
     QHostAddress localIPAddress;
     QString validationStr;
+    CQR_Encode qrEncode;
 
 private slots:
     void onCodeGenerationButtonClicked();
